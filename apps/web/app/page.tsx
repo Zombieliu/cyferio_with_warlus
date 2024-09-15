@@ -63,7 +63,7 @@ export default function Page() {
       .createAuthorizationURL({
         provider: "google",
         network: "testnet",
-        clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+        clientId: "40066679555-vibqigf8l3ginnva8sjhceag08svkllt.apps.googleusercontent.com",
         redirectUrl,
         extraParams: {
           scope: ["openid", "email", "profile"],
@@ -176,23 +176,24 @@ export default function Page() {
       <header className="flex items-center justify-between w-full px-4 py-4 border-b md:px-6">
         <div className="flex items-center space-x-2">
           <LogInIcon className="w-8 h-8" />
-          <h1 className="text-2xl font-bold">TMS Demo</h1>
+          <h1 className="text-2xl font-bold">TMC Demo</h1>
         </div>
         <div className="flex items-center space-x-4">
           <Button
             variant="outline"
             onClick={query_digest}
           >
-          Query Digest 
+          4-Query Digest 
         </Button>
-          <Button onClick={send_tx}>Send TX</Button>
-          <Button onClick={zk_login}>ZK-Login</Button>
+          <Button onClick={send_tx}>3-Send TX</Button>
+          <Button onClick={send_tx}>2-Create TMC Account</Button>
+          <Button onClick={zk_login}>1-ZK-Login</Button>
         </div>
       </header>
       <main className="flex flex-col items-center flex-1 w-full px-4 py-8 text-center md:px-6">
-        <h2 className="text-3xl font-bold">TMS With Walrus Test |</h2>
+        <h2 className="text-3xl font-bold">TMC With Walrus Test |</h2>
         <p className="mt-4 text-lg">
-          This is simple TMS With Walrus Demo !
+          This is simple TMC With Walrus Demo !
         </p>
         <p className="mt-4 text-lg">
           This is digest: {show_digest}

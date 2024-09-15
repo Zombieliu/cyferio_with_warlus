@@ -2,7 +2,8 @@
 
 
 const nextConfig = {
-  // distDir: 'dist',
+  output: "export",
+  distDir: 'dist'
   // async rewrites() {
   //   return [
   //     {
@@ -15,7 +16,6 @@ const nextConfig = {
   //     },
   //   ]
   // },
-  output:"export"
 };
 
 module.exports = {

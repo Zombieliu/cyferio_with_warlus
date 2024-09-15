@@ -74,6 +74,11 @@ export default function Page() {
       })
       .catch((error) => {
         console.error(error);
+        alert("zk login error");
+      });
+      // alert("zk login success");
+      toast("zk login Successful", {
+        description: new Date().toUTCString()
       });
   };
 
@@ -125,16 +130,68 @@ export default function Page() {
     nonce = await client.queryNonce({
       credentialId: credentialId.data.value[0],
     });
-
-    const res = await client.signAndExecuteBatchTransaction({
-      callPayload,
+      const res = await client.signAndExecuteBatchTransaction({
+        callPayload,
       signer: keypair,
       nonce:nonce.nonce,
     }) as any;
 
     console.log(res.data.daHeight);
     console.log(res.data.numTxs);
-    SetDaHeight(res.data.daHeight)
+    SetDaHeight(res.data.daHeight);
+    toast("send tx success", {
+      description: new Date().toUTCString()
+    });
+  };
+
+  const create_account = async () => {
+    const client = new SovereignClient({
+      rest: "https://tmc-rest.cyferio.com",
+      rpc: "https://tmc-rpc.cyferio.com",
+    });
+
+    const test_private_key = new Uint8Array([
+      117, 251, 248, 217, 135, 70, 194, 105, 46, 80, 41, 66, 185, 56, 200, 35,
+      121, 253, 9, 234, 159, 91, 96, 212, 211, 158, 135, 225, 180, 36, 104, 253,
+    ]);
+
+    const keypair = Ed25519Keypair.fromSecretKey(test_private_key, {
+      skipValidation: true,
+    });
+    console.log(keypair.toAddress());
+
+    let pay_address = keypair.toAddress()
+    const EnokiKeypair = await enokiFlow.getKeypair({ network: "testnet" });
+    let pubkey = EnokiKeypair.getPublicKey().toRawBytes();
+    let address = client.encodePubkeyToSovAddress({ pubkey: toHEX(pubkey) });
+    console.log("3", address);
+    const callPayload = {
+      bank: {
+        Transfer: {
+          to: address,
+          coins: {
+            amount: 100000,
+            token_id:
+              "token_1rwrh8gn2py0dl4vv65twgctmlwck6esm2as9dftumcw89kqqn3nqrduss6",
+          },
+        },
+      },
+    };
+    try{
+      const res = await client.signAndExecuteBatchTransaction({
+      callPayload,
+      signer: keypair,
+      nonce:0,
+    }) as any;
+
+    console.log(res.data.daHeight);
+    console.log(res.data.numTxs);
+    SetDaHeight(res.data.daHeight);
+    } catch (error) {
+      toast("create account success", {
+        description: new Date().toUTCString()
+      });
+    }
   };
 
   const query_digest = async () => {
@@ -161,7 +218,6 @@ export default function Page() {
           onClick: () => window.open(`https://testnet.suivision.xyz/txblock/${digest}`, "_blank"),
         },
       });
-
       SetDigest(digest);
     } catch (error) {
       console.error("Error in query_digest:", error);
@@ -186,7 +242,7 @@ export default function Page() {
           4-Query Digest 
         </Button>
           <Button onClick={send_tx}>3-Send TX</Button>
-          <Button onClick={send_tx}>2-Create TMC Account</Button>
+          <Button onClick={create_account}>2-Create TMC Account</Button>
           <Button onClick={zk_login}>1-ZK-Login</Button>
         </div>
       </header>
